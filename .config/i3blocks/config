@@ -1,0 +1,77 @@
+# i3blocks configuration file
+#
+# The i3blocks man page describes the usage of the binary,
+# and its website describes the configuration:
+#
+#     https://vivien.github.io/i3blocks
+
+
+# Global properties
+separator=true
+separator_block_width=15
+
+#[documentation]
+#full_text=Documentation
+#website=https://vivien.github.io/i3blocks
+#command=xdg-open "$website"
+#color=#f12711
+
+#[greetings]
+##color=#f5af19
+#command=echo "<span color='#f5af19'>Hello, $USER!</span>"
+#interval=once
+#markup=pango
+
+#[intel_gpu]
+#command=~/i3blocks/intel_gpu.sh
+#threshold=80
+#interval=persist
+#upd_interval=3
+#markup=pango
+
+[network]
+command=~/i3blocks/network.sh
+interval=2
+markup=pango
+
+[volume]
+command=~/i3blocks/volume.sh
+interval=persist
+markup=pango
+
+[battery]
+command=~/i3blocks/battery.sh
+threshold=95
+crit_threshold=20
+interval=1
+markup=pango
+
+#[io]
+#command=~/i3blocks/io.sh
+#threshold=80
+#interval=2
+#markup=pango
+
+[cpu]
+command=~/i3blocks/cpu.sh
+threshold=80
+interval=2
+markup=pango
+
+[temp]
+command=~/i3blocks/temp.sh
+threshold=70
+crit_threshold=85
+thermal_zone=0
+interval=2
+markup=pango
+
+[memory]
+command=~/i3blocks/memory.sh
+threshold=1024000
+interval=2
+markup=pango
+
+[time]
+command=date '+%d/%m/%Y %H:%M:%S'
+interval=1
