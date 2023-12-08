@@ -3,4 +3,5 @@ echo 100 | doas /bin/tee /sys/class/backlight/nvidia_0/brightness &
 ~/.fehbg &
 xrdb ~/.Xresources &
 xset -dpms &
+xset s off &
 i3
