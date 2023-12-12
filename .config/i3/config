@@ -34,7 +34,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 
 bindsym --release $mod+Shift+s exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
 bindcode 107 exec gnome-screenshot -i
-bindcode $mod+107 exec gnome-screenshot -a -f ~/Изображения/screenshot.png
+bindcode $mod+107 exec gnome-screenshot -a -f ~/Pictures/screenshot.png
 
 # kill focused window
 bindsym $mod+Shift+q kill
