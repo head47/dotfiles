@@ -179,6 +179,8 @@ bindsym $mod+l exec i3lock-extra.sh
 # rename workspace
 bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
 
+bindsym $mod+m exec mute-window.sh
+
 client.focused          #99554d #783129 #ffffff #f5432f   #783129
 client.focused_inactive #333333 #6b6061 #ffffff #4f4748   #6b6061
 client.unfocused        #333333 #222222 #888888 #2d292a   #222222
