@@ -25,7 +25,7 @@ prompt adam1 red magenta
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=100000
-setopt autocd beep notify
+setopt autocd beep notify hist_ignore_all_dups
 bindkey -e
 # End of lines configured by zsh-newuser-install
 
