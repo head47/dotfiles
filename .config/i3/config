@@ -140,7 +140,8 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar --font 'pango:Liberation Mono 6' -t warning -m 'End your X session?' -B 'shutdown' 'systemctl poweroff' -B 'reboot' 'systemctl reboot' -B 'logout' 'i3-msg exit' -B 'suspend' 'i3lock-extra.sh && systemctl suspend && pkill -u $USER i3-nagbar'"
+# bindsym $mod+Shift+e exec "i3-nagbar --font 'pango:Liberation Mono 6' -t warning -m 'End your X session?' -B 'shutdown' 'systemctl poweroff' -B 'reboot' 'systemctl reboot' -B 'logout' 'i3-msg exit' -B 'suspend' 'i3lock-extra.sh && systemctl suspend && pkill -u $USER i3-nagbar'"
+bindsym $mod+Shift+e exec logout-zenity.sh
 
 # resize window (you can also use the mouse for that)
 mode "resize" {

@@ -19,13 +19,13 @@ while IFS= read -r pid; do
         continue
     fi
     if ! [ -z "$sinkInputId" ]; then
-        i3-nagbar -m "multiple sink inputs found, cannot decide"
+        zenity --error --text "multiple sink inputs found, cannot decide"
         exit 2
     fi
     sinkInputId=$newSinkInputId
 done <<< "$groupPids"
 if [ -z "$sinkInputId" ]; then
-    i3-nagbar -m "no sink input found"
+    zenity --error --text "no sink input found"
     exit 1
 fi
 
