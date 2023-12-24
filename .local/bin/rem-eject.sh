@@ -8,7 +8,7 @@ if ! doas /bin/umount /dev/mapper/$name; then
     processList=()
     for usingPid in "${pids[@]}"; do
         command=$(cat /proc/$usingPid/cmdline | xargs -0 echo)
-        processList+=($usingPid $command)
+        processList+=("$usingPid" "$command")
     done
     respCustom=$(
         zenity --list \
