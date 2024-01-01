@@ -12,18 +12,6 @@ if [ "$status" = "Full" ]; then
 	echo "<span color='#00ff00'>full "$percentage"%</span>"
 elif [ "$status" = "Charging" ]; then
 	echo "chr: "$percentage"%"
-elif [ "$status" = "Unknown" ]; then
-	if [ "$percentage" -lt "$crit_threshold" ]; then
-		if [ $((`date +%s` % 2)) -eq 1 ]; then
-			echo "<span color='#ff0000'>BAT: "$percentage"%</span>"
-		else
-			echo "<span color='#ffff00'>BAT: "$percentage"%</span>"
-		fi
-	elif [ "$percentage" -lt "$threshold" ]; then
-        	echo "<span color='#ff0000'>BAT: "$percentage"%</span>"
-	else
-        	echo "bat: "$percentage"%"
-	fi
 elif [ "$status" = "Discharging" ]; then
 	if [ "$percentage" -lt "$crit_threshold" ]; then
 		if [ $((`date +%s` % 2)) -eq 1 ]; then
@@ -31,9 +19,21 @@ elif [ "$status" = "Discharging" ]; then
 		else
 			echo "<span color='#ffff00'>DIS: "$percentage"%</span>"
 		fi
-	elif [ "$degrees" -lt "$threshold" ]; then
+	elif [ "$percentage" -lt "$threshold" ]; then
 		echo "<span color='#ff0000'>dis: "$percentage"%</span>"
 	else
 		echo "dis: "$percentage"%"
+	fi
+else
+	if [ "$percentage" -lt "$crit_threshold" ]; then
+		if [ $((`date +%s` % 2)) -eq 1 ]; then
+			echo "<span color='#ff0000'>BAT: "$percentage"%</span>"
+		else
+			echo "<span color='#ffff00'>BAT: "$percentage"%</span>"
+		fi
+	elif [ "$percentage" -lt "$threshold" ]; then
+        	echo "<span color='#ff0000'>bat: "$percentage"%</span>"
+	else
+        	echo "bat: "$percentage"%"
 	fi
 fi
