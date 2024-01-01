@@ -1,39 +1,88 @@
 #!/bin/bash
 
-interfaces=($(ls /sys/class/net))
-for i in "${!interfaces[@]}"; do
-	if [[ "${interfaces[$i]}" = 'lo' ]]; then
-		continue
+declare -A prevInterfaceStats
+declare -A currInterfaceStats
+
+interval=2
+
+update_interface_stats() {
+	interfaces=("$@")
+	prevInterfaceStats=
+	for i in "${!currInterfaceStats[@]}"; do
+		prevInterfaceStats[$i]=${currInterfaceStats[$i]}
+	done
+	for i in "${interfaces[@]}"; do
+		statisticsPath=/sys/class/net/$i/statistics
+		rxBytes=$(cat "$statisticsPath/rx_bytes")
+		txBytes=$(cat "$statisticsPath/tx_bytes")
+		currInterfaceStats[$i]="$rxBytes $txBytes"
+	done
+}
+
+get_interface_stats_output() {
+	interface=$1
+	prevStats=(${prevInterfaceStats[$interface]})
+	if [ -z "$prevStats" ]; then
+		output="R ?     T ?    "
+		echo "$output"
+		return
 	fi
-	#if [[ "${interfaces[$i]}" == *'mon'* ]]; then
-	#	echo -n "<span color='#0000ff'>${interfaces[$i]}: MONITOR</span>"
-	#	continue
-	#fi
-	if [[ $(ip a show "${interfaces[$i]}" | grep -F 'UP') ]]; then
-		if [[ $(ip a show "${interfaces[$i]}" | grep -P '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))') ]]; then
-			ap=$(iwconfig 2> /dev/null | grep "${interfaces[$i]}" | cut -d '"' -f 2)
-                        if [[ $ap ]]; then
-				echo -n "<span color='#00ff00'>${interfaces[$i]}: $(ip a show "${interfaces[$i]}" | grep -Po '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))') - $ap</span>"
-                        else
-				echo -n "<span color='#00ff00'>${interfaces[$i]}: $(ip a show "${interfaces[$i]}" | grep -Po '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))')</span>"
-                        fi
-		elif [[ $(ip a show "${interfaces[$i]}" | grep -F 'NO-CARRIER') ]]; then
-			echo -n "<span color='#ff0000'>${interfaces[$i]}: NO CARRIER</span>"
+	currStats=(${currInterfaceStats[$interface]})
+	rxPerSecondHR="$(numfmt --to=iec <<< $(( (${currStats[0]}-${prevStats[0]})/$interval )) )"
+	rxPerSecondHR=$(printf "%-5s" $rxPerSecondHR)
+	txPerSecondHR="$(numfmt --to=iec <<< $(( (${currStats[1]}-${prevStats[1]})/$interval )) )"
+	txPerSecondHR=$(printf "%-5s" $txPerSecondHR)
+	output="R $rxPerSecondHR T $txPerSecondHR"
+	echo "$output"
+}
+
+get_interface_status_output() {
+	interface=$1
+	ipAddrShow=$(ip a show "$interface")
+	if [[ $(grep -F 'UP' <<< $ipAddrShow) ]]; then
+		if [[ $(grep -P '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))' <<< $ipAddrShow) ]]; then
+			ap=$(iwconfig 2> /dev/null | grep "$interface" | cut -d '"' -f 2)
+				if [[ $ap ]]; then
+					output="<span color='#00ff00'>$interface: $(grep -Po '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))' <<< $ipAddrShow) - $ap"
+				else
+					output="<span color='#00ff00'>$interface: $(grep -Po '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))' <<< $ipAddrShow)"
+				fi
+		elif [[ $(grep -F 'NO-CARRIER' <<< $ipAddrShow) ]]; then
+			output="<span color='#ff0000'>$interface: NO CARRIER"
 		else
-			ap=$(iwconfig 2> /dev/null | grep "${interfaces[$i]}" | cut -d '"' -f 2)
+			ap=$(iwconfig 2> /dev/null | grep "$interface" | cut -d '"' -f 2)
 			if [[ "$ap" == *"Mode:Monitor"* ]]; then
-				echo -n "<span color='#0000ff'>${interfaces[$i]}: MONITOR</span>"
+				output="<span color='#0000ff'>$interface: MONITOR"
 			elif [[ $ap ]]; then
-				echo -n "<span color='#ffff00'>${interfaces[$i]}: NO IP - $ap</span>"
+				output="<span color='#ffff00'>$interface: NO IP - $ap"
 			else
-				echo -n "<span color='#ffff00'>${interfaces[$i]}: NO IP</span>"
+				output="<span color='#ffff00'>$interface: NO IP"
 			fi
 		fi
 	else
-		echo -n "<span color='#ffffff'>${interfaces[$i]}: off</span>"
+		output="<span color='#ffffff'>$interface: off"
 	fi
-	if [ "$i" -ne $(("${#interfaces[@]}"-1)) ]; then
-		echo -n "  "
-	fi
+	echo "$output"
+}
+
+while true; do
+	output=
+	interfaces=($(ls /sys/class/net))
+	update_interface_stats "${interfaces[@]}"
+	for i in "${!interfaces[@]}"; do
+		if [[ "${interfaces[$i]}" = 'lo' ]]; then
+			continue
+		fi
+		output+=$(get_interface_status_output "${interfaces[$i]}")
+		stats=$(get_interface_stats_output "${interfaces[$i]}")
+		if ! [ -z "$stats" ]; then
+			output+=" $stats"
+		fi
+		output+="</span>"
+		if [ "$i" -ne $(("${#interfaces[@]}"-1)) ]; then
+			output+="  "
+		fi
+	done
+	echo "$output"
+	sleep "$interval"
 done
-echo
