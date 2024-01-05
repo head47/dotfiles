@@ -73,10 +73,13 @@ while true; do
 		if [[ "${interfaces[$i]}" = 'lo' ]]; then
 			continue
 		fi
-		output+=$(get_interface_status_output "${interfaces[$i]}")
-		stats=$(get_interface_stats_output "${interfaces[$i]}")
-		if ! [ -z "$stats" ]; then
-			output+=" $stats"
+		ifOutput=$(get_interface_status_output "${interfaces[$i]}")
+		output+=$ifOutput
+		if ! [[ "$ifOutput" = *": NO CARRIER" || "$ifOutput" = *": off" ]]; then
+			stats=$(get_interface_stats_output "${interfaces[$i]}")
+			if ! [ -z "$stats" ]; then
+				output+=" $stats"
+			fi
 		fi
 		output+="</span>"
 		if [ "$i" -ne $(("${#interfaces[@]}"-1)) ]; then
