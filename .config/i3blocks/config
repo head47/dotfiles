@@ -33,6 +33,7 @@ separator_block_width=15
 command=~/i3blocks/network.sh
 interval=persist
 markup=pango
+format=json
 
 [volume]
 command=~/i3blocks/volume.sh

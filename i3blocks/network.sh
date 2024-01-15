@@ -47,6 +47,8 @@ get_interface_status_output() {
 				else
 					output="<span color='#00ff00'>$interface: $(grep -Po '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))' <<< $ipAddrShow)"
 				fi
+		# elif [[ $(grep -F 'SLAVE' <<< $ipAddrShow) ]]; then
+		# 	output="<span color='#c9c9c9'>$interface: SLAVE"
 		elif [[ $(grep -F 'NO-CARRIER' <<< $ipAddrShow) ]]; then
 			output="<span color='#ff0000'>$interface: NO CARRIER"
 		else
@@ -65,12 +67,37 @@ get_interface_status_output() {
 	echo "$output"
 }
 
+get_short_output() {
+	interface=$1
+	ipAddrShow=$(ip a show "$interface")
+	if [[ $(grep -F 'UP' <<< $ipAddrShow) ]]; then
+		if [[ $(grep -P '(?<=inet )[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*(?=(\/| ))' <<< $ipAddrShow) ]]; then
+			output="<span color='#00ff00'>$interface"
+		elif [[ $(grep -F 'NO-CARRIER' <<< $ipAddrShow) ]]; then
+			output="<span color='#ff0000'>$interface"
+		else
+			ap=$(iwconfig 2> /dev/null | grep "$interface" | cut -d '"' -f 2)
+			if [[ "$ap" == *"Mode:Monitor"* ]]; then
+				output="<span color='#0000ff'>$interface"
+			else
+				output="<span color='#ffff00'>$interface"
+			fi
+		fi
+	else
+		output="<span color='#ffffff'>$interface"
+	fi
+	echo "$output"
+}
+
 while true; do
 	output=
 	interfaces=($(ls /sys/class/net))
 	update_interface_stats "${interfaces[@]}"
 	for i in "${!interfaces[@]}"; do
 		if [[ "${interfaces[$i]}" = 'lo' ]]; then
+			continue
+		fi
+		if ! (ip a show "${interfaces[$i]}" > /dev/null 2>&1); then
 			continue
 		fi
 		ifOutput=$(get_interface_status_output "${interfaces[$i]}")
@@ -86,6 +113,23 @@ while true; do
 			output+="  "
 		fi
 	done
-	echo "$output"
+
+	shortOutput=
+	for i in "${!interfaces[@]}"; do
+		if [[ "${interfaces[$i]}" = 'lo' ]]; then
+			continue
+		fi
+		if ! (ip a show "${interfaces[$i]}" > /dev/null 2>&1); then
+			continue
+		fi
+		ifOutput=$(get_short_output "${interfaces[$i]}")
+		shortOutput+="$ifOutput</span>"
+		if [ "$i" -ne $(("${#interfaces[@]}"-1)) ]; then
+			shortOutput+="  "
+		fi
+	done
+
+	jsonOutput=$(jq -cn --arg full_text "$output" --arg short_text "$shortOutput" '$ARGS.named')
+	echo "$jsonOutput"
 	sleep "$interval"
 done
