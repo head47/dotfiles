@@ -150,6 +150,8 @@ assign [class="firefox"] $ws3
 assign [class="steam"] $ws4
 assign [class="Lutris"] $ws4
 
+assign [class="Code" instance="code"] $ws5
+
 assign [class="TelegramDesktop"] $ws11
 assign [class="discord"] $ws11
 
