@@ -113,7 +113,8 @@ set $ws5 "5:"
 set $ws11 "11:"
 # files
 set $ws12 "12:"
-set $ws13 "13"
+# sound
+set $ws13 "13:"
 set $ws14 "14"
 set $ws15 "15"
 
@@ -156,6 +157,11 @@ assign [class="TelegramDesktop"] $ws11
 assign [class="discord"] $ws11
 
 assign [class="Pcmanfm"] $ws12
+
+assign [class="Pavucontrol"] $ws13
+assign [class="Guitarix"] $ws13
+assign [class="QjackCtl"] $ws13
+assign [class="Cadence"] $ws13
 
 
 # reload the configuration file
