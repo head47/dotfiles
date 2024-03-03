@@ -44,6 +44,7 @@ markup=pango
 command=~/i3blocks/battery.sh
 threshold=95
 crit_threshold=20
+shutdown_threshold=10
 interval=1
 markup=pango
 

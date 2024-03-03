@@ -37,3 +37,7 @@ else
         	echo "bat: "$percentage"%"
 	fi
 fi
+
+if [ ! -z "$percentage" -a "$percentage" -lt "$shutdown_threshold" ]; then
+	systemctl poweroff
+fi
