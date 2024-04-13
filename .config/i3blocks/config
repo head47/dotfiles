@@ -60,6 +60,13 @@ threshold=80
 interval=2
 markup=pango
 
+[nvidia_gpu]
+command=~/i3blocks/nvidia_gpu.sh
+gpu_index=0
+threshold=80
+interval=2
+markup=pango
+
 [temp]
 command=~/i3blocks/temp.sh
 threshold=70
