@@ -10,9 +10,9 @@
 separator=true
 separator_block_width=15
 
-[battery]
-command=~/i3blocks/battery_graphical.sh
-threshold=25
-crit_threshold=15
-interval=1
-markup=pango
+#[battery]
+#command=~/i3blocks/battery_graphical.sh
+#threshold=25
+#crit_threshold=15
+#interval=1
+#markup=pango

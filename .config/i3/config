@@ -75,7 +75,7 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+h split h
 
 # split in vertical orientation
-#bindsym $mod+v split v
+bindsym $mod+v split v
 #bindsym $mod+v exec copyq show
 
 # enter fullscreen mode for the focused container
@@ -219,13 +219,26 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       #ffffff
 
-#bar {
-#    workspace_buttons no
-#    binding_mode_indicator no
-#    status_command i3blocks -c ~/.config/i3blocks/config.secondary
-#}
+bar {
+    # id 0
+    mode hide
+    status_command i3blocks -c ~/.config/i3blocks/config.secondary
+    tray_output none
+    colors {
+        background #000000
+        statusline #ffffff
+        separator #666666
+
+        focused_workspace  #99554d #783129 #ffffff
+        active_workspace   #333333 #6a605f #ffffff
+        inactive_workspace #333333 #222222 #888888
+        urgent_workspace   #3b3330 #8f1800 #ffffff
+        binding_mode       #3b3330 #8f1800 #ffffff
+    }
+}
 
 bar {
+    # id 1
     status_command i3blocks
     colors {
         background #000000
