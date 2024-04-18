@@ -16,3 +16,13 @@ separator_block_width=15
 #crit_threshold=15
 #interval=1
 #markup=pango
+
+[vpn]
+command=~/i3blocks/toggle_vpn.sh
+interval=10
+markup=pango
+
+[rem]
+command=~/i3blocks/toggle_rem.sh
+interval=3
+markup=pango
