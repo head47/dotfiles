@@ -155,6 +155,7 @@ assign [class="Code" instance="code"] $ws5
 
 assign [class="TelegramDesktop"] $ws11
 assign [class="discord"] $ws11
+assign [class="Element"] $ws11
 
 assign [class="Pcmanfm"] $ws12
 
